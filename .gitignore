@@ -39,3 +39,9 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# secrets (from course starter template)
+*secret*
+*credentials*.json
+.vscode/
+.idea/
