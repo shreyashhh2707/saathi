@@ -61,6 +61,6 @@ Runs 13+ realistic inputs (Hinglish, Marathi, Goan dishes, red flags, medicine a
 
 - [Next.js](https://nextjs.org) (MIT), [React](https://react.dev) (MIT), [Tailwind CSS](https://tailwindcss.com) (MIT), [Zod](https://zod.dev) (MIT)
 - [Anthropic Claude API](https://docs.anthropic.com) and `@anthropic-ai/sdk` (MIT) for the AI
-- Geist font by Vercel (SIL Open Font License)
+- Fraunces and Plus Jakarta Sans fonts via Google Fonts (SIL Open Font License)
 - Built with Claude Code (AI coding assistant). See the AI-use disclosure in the report.
 - No third-party images or videos are used.

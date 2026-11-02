@@ -62,51 +62,72 @@ export function VoiceInput(props: {
   }
 
   return (
-    <div className="rounded-3xl bg-white p-4 shadow-sm ring-1 ring-stone-200">
-      <textarea
-        value={text}
-        onChange={(e) => setText(e.target.value)}
-        placeholder={props.placeholder}
-        rows={3}
-        className="w-full resize-none rounded-2xl bg-stone-50 p-3 text-lg leading-snug outline-none ring-1 ring-stone-200 focus:ring-2 focus:ring-teal-600"
-      />
+    <div className="rounded-[32px] bg-white p-4 shadow-lift ring-1 ring-line">
+      <div className="flex items-start gap-3">
+        <button
+          onClick={toggleMic}
+          aria-pressed={listening}
+          aria-label={listening ? "Stop listening" : "Speak"}
+          className={`relative grid h-16 w-16 shrink-0 place-items-center rounded-full text-white shadow-soft transition active:scale-95 ${
+            listening ? "bg-coral" : "bg-gradient-to-br from-teal to-teal-deep"
+          }`}
+        >
+          {listening && (
+            <>
+              <span className="absolute inset-0 animate-ping rounded-full bg-coral/40" />
+              <span className="absolute -inset-2 animate-pulse rounded-full ring-4 ring-coral/25" />
+            </>
+          )}
+          {listening ? (
+            <span className="relative h-5 w-5 rounded-md bg-white" />
+          ) : (
+            <svg viewBox="0 0 24 24" className="relative h-7 w-7" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <rect x="9" y="3" width="6" height="11" rx="3" />
+              <path d="M5 11a7 7 0 0 0 14 0M12 18v3" />
+            </svg>
+          )}
+        </button>
+        <textarea
+          value={text}
+          onChange={(e) => setText(e.target.value)}
+          placeholder={listening ? "Listening… speak now" : props.placeholder}
+          aria-label="What would you like to tell Saathi?"
+          rows={3}
+          className="min-h-16 flex-1 resize-none bg-transparent py-1 text-lg leading-snug outline-none placeholder:text-ink-soft/70"
+        />
+      </div>
       {preview && (
-        <div className="mt-3 flex items-center gap-3">
+        <div className="mt-3 flex items-center gap-3 rounded-2xl bg-cream p-2">
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={preview} alt="Your photo" className="h-20 w-20 rounded-xl object-cover" />
-          <button onClick={() => { setPhoto(null); setPreview(null); }} className="text-base text-stone-600 underline">
+          <img src={preview} alt="Your photo" className="h-16 w-16 rounded-xl object-cover" />
+          <button onClick={() => { setPhoto(null); setPreview(null); }} className="text-base font-medium text-ink-soft underline">
             Remove photo
           </button>
         </div>
       )}
-      {micError && <p className="mt-2 text-base text-amber-800">{micError}</p>}
-      <div className="mt-3 flex flex-wrap gap-2">
-        <button
-          onClick={toggleMic}
-          aria-pressed={listening}
-          className={`flex min-h-14 flex-1 items-center justify-center gap-2 rounded-2xl px-4 text-lg font-semibold ${
-            listening ? "animate-pulse bg-red-600 text-white" : "bg-teal-700 text-white"
-          }`}
-        >
-          <span aria-hidden>{listening ? "■" : "🎤"}</span> {listening ? "Stop" : "Speak"}
-        </button>
+      {micError && <p className="mt-2 text-base text-saffron-deep">{micError}</p>}
+      <div className="mt-3 flex gap-2 border-t border-line pt-3">
         {props.allowPhoto && (
           <>
             <input ref={fileRef} type="file" accept="image/*" capture="environment" hidden onChange={(e) => pickPhoto(e.target.files?.[0])} />
             <button
               onClick={() => fileRef.current?.click()}
-              className="flex min-h-14 flex-1 items-center justify-center gap-2 rounded-2xl bg-stone-800 px-4 text-lg font-semibold text-white"
+              className="flex min-h-14 items-center justify-center gap-2 rounded-2xl bg-cream px-5 text-lg font-semibold ring-1 ring-line transition hover:bg-white"
             >
-              <span aria-hidden>📷</span> Photo
+              <svg viewBox="0 0 24 24" className="h-6 w-6" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M4 8h3l2-3h6l2 3h3v11H4z" />
+                <circle cx="12" cy="13" r="3.5" />
+              </svg>
+              Photo
             </button>
           </>
         )}
         <button
           onClick={submit}
           disabled={props.busy || (!text.trim() && !photo)}
-          className="min-h-14 flex-1 rounded-2xl bg-amber-500 px-4 text-lg font-bold text-stone-900 disabled:opacity-40"
+          className="min-h-14 flex-1 rounded-2xl bg-saffron px-4 text-lg font-bold text-ink shadow-soft transition active:scale-[0.99] disabled:opacity-35"
         >
-          {props.busy ? "Thinking…" : props.submitLabel}
+          {props.busy ? <span className="inline-flex items-center gap-2"><span className="h-4 w-4 animate-spin rounded-full border-2 border-ink/30 border-t-ink" /> Thinking…</span> : props.submitLabel}
         </button>
       </div>
     </div>
