@@ -21,6 +21,8 @@ Not medical advice. Student prototype — use made-up data only.
 
 All data stays in the browser (localStorage). Nothing is stored on a server.
 
+**Testing tip:** open the app with `?reset` on the end of the URL (e.g. `https://your-app.vercel.app/?reset`) to wipe this browser's data and see onboarding again. **Settings → Start over** does the same from inside the app.
+
 ## Run it locally
 
 ```bash
