@@ -4,7 +4,7 @@
 
 > **For an older adult living on their own who has been told by a doctor to eat better, drink more water and walk daily: Saathi lets them just say or snap what they did, in their own language, and quietly keeps them (and the family member who worries) on track.**
 
-- **Live app:** [https://…]
+- **Live app:** https://saathi-red.vercel.app (add `?reset` to start fresh)
 - **Report:** [REPORT.md](REPORT.md)
 
 Not medical advice. Student prototype — use made-up data only.
