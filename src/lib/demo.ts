@@ -5,28 +5,46 @@ import type { FamilyUpdate, LogResult, Nudge, Profile, LoggedEntry } from "./sch
 // It is deliberately simple and is labelled "demo" in the UI.
 
 export function demoProfile(text: string): Profile {
-  const age = Number(/(\d{2})\s*(years|yrs|saal|varsh)/i.exec(text)?.[1] ?? 0);
-  const name = /(?:\bi am|\bi'm|my name is|naam)\s+([a-z]+)/i.exec(text)?.[1] ?? "";
+  const NOT_NAMES = /^(a|an|the|from|in|at|vegetarian|veg|pure|non|retired|living|not|very|diabetic|\d)/i;
+  const nameMatch = [...text.matchAll(/(?:\bi am|\bi'm|my name is|naam)\s+([a-z]+)/gi)].find((m) => !NOT_NAMES.test(m[1]));
+  const name = nameMatch ? nameMatch[1][0].toUpperCase() + nameMatch[1].slice(1) : "";
+  const age = Number(
+    /(\d{2})\s*(?:years|yrs|saal|varsh)/i.exec(text)?.[1] ?? /\b(?:age|aged)\s*(\d{2})\b/i.exec(text)?.[1] ?? /^[^.]*?,\s*(\d{2})\b/.exec(text)?.[1] ?? 0,
+  );
   const diet = /non[-\s]?veg|fish|chicken|mutton/i.test(text)
     ? "non-veg"
-    : /egg/i.test(text)
+    : /\begg/i.test(text)
       ? "eggetarian"
       : /veg/i.test(text)
         ? "veg"
         : "unknown";
-  const family = /(son|daughter|beta|beti)\s+([A-Z][a-z]+)/i.exec(text);
+  const doctor = /doctor\s*(?:said|says|told me|advised)?\s*(?:that\s+)?([^.!]+)/i.exec(text)?.[1]?.trim();
+  const water = Number(/(\d+)\s*glass(?:es)?\s*(?:of\s*)?(?:water|paani|pani)/i.exec(text)?.[1] ?? 0);
+  const walk = Number(
+    /walk(?:ing)?\s*(?:for\s*)?(?:about\s*)?(\d+)\s*min/i.exec(text)?.[1] ?? /(\d+)\s*min(?:ute)?s?\s*(?:of\s*)?walk/i.exec(text)?.[1] ?? 0,
+  );
+  const time = (re: RegExp, evening: boolean, fallback: string) => {
+    const m = re.exec(text);
+    if (!m) return fallback;
+    let h = Number(m[1]);
+    const ampm = m[3]?.toLowerCase();
+    if (ampm === "pm" && h < 12) h += 12;
+    if (!ampm && evening && h < 12) h += 12;
+    return `${String(h).padStart(2, "0")}:${m[2] ?? "00"}`;
+  };
+  const family = /(son|daughter|beta|beti|grandson|granddaughter)\s+([A-Z][a-z]+)/i.exec(text);
   return {
     name,
     age,
     language: /\b(hai|nahi|mujhe|khana|paani)\b/i.test(text) ? "Hinglish" : "English",
     diet,
-    doctor_said: /doctor/i.test(text) ? [text.split(/doctor\s*(?:said|told me)?/i)[1]?.split(/[.!]/)[0]?.replace(/^[\s,:]*(that\s+)?/i, "").trim() || "follow doctor's advice"] : [],
-    water_target_glasses: 8,
-    walk_target_minutes: 20,
-    wake_time: "06:30",
-    sleep_time: "22:00",
-    family_name: family ? `${family[2]} (${family[1].toLowerCase()})` : "",
-    still_missing: ["Did your doctor give you a water limit?"],
+    doctor_said: doctor ? [doctor] : [],
+    water_target_glasses: water || 8,
+    walk_target_minutes: walk || 20,
+    wake_time: time(/(?:wake|get)\s*up\s*(?:at|by|around)?\s*(\d{1,2})(?::(\d{2}))?\s*(am|pm)?/i, false, "06:30"),
+    sleep_time: time(/(?:sleep|bed)\s*(?:at|by|around)?\s*(\d{1,2})(?::(\d{2}))?\s*(am|pm)?/i, true, "22:00"),
+    family_name: family ? `${family[2][0].toUpperCase()}${family[2].slice(1)} (${family[1].toLowerCase()})` : "",
+    still_missing: water ? [] : ["Did your doctor give you a water limit?"],
   };
 }
 

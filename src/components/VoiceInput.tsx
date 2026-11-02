@@ -9,6 +9,7 @@ export function VoiceInput(props: {
   placeholder: string;
   busy: boolean;
   submitLabel: string;
+  rows?: number;
   allowPhoto?: boolean;
   onSubmit: (text: string, photo: File | null) => void;
 }) {
@@ -63,12 +64,30 @@ export function VoiceInput(props: {
 
   return (
     <div className="rounded-[32px] bg-white p-4 shadow-lift ring-1 ring-line">
-      <div className="flex items-start gap-3">
+      <textarea
+        value={text}
+        onChange={(e) => setText(e.target.value)}
+        placeholder={listening ? "Listening… speak now" : props.placeholder}
+        aria-label="What would you like to tell Saathi?"
+        rows={props.rows ?? 3}
+        className="w-full resize-none rounded-2xl bg-cream/60 p-3 text-lg leading-snug outline-none placeholder:text-ink-soft/70"
+      />
+      {preview && (
+        <div className="mt-3 flex items-center gap-3 rounded-2xl bg-cream p-2">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src={preview} alt="Your photo" className="h-16 w-16 rounded-xl object-cover" />
+          <button onClick={() => { setPhoto(null); setPreview(null); }} className="text-base font-medium text-ink-soft underline">
+            Remove photo
+          </button>
+        </div>
+      )}
+      {micError && <p className="mt-2 text-base text-saffron-deep">{micError}</p>}
+      <div className="mt-3 flex items-center gap-2">
         <button
           onClick={toggleMic}
           aria-pressed={listening}
           aria-label={listening ? "Stop listening" : "Speak"}
-          className={`relative grid h-16 w-16 shrink-0 place-items-center rounded-full text-white shadow-soft transition active:scale-95 ${
+          className={`relative grid h-14 w-14 shrink-0 place-items-center rounded-full text-white shadow-soft transition active:scale-95 ${
             listening ? "bg-coral" : "bg-gradient-to-br from-teal to-teal-deep"
           }`}
         >
@@ -87,26 +106,6 @@ export function VoiceInput(props: {
             </svg>
           )}
         </button>
-        <textarea
-          value={text}
-          onChange={(e) => setText(e.target.value)}
-          placeholder={listening ? "Listening… speak now" : props.placeholder}
-          aria-label="What would you like to tell Saathi?"
-          rows={3}
-          className="min-h-16 flex-1 resize-none bg-transparent py-1 text-lg leading-snug outline-none placeholder:text-ink-soft/70"
-        />
-      </div>
-      {preview && (
-        <div className="mt-3 flex items-center gap-3 rounded-2xl bg-cream p-2">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={preview} alt="Your photo" className="h-16 w-16 rounded-xl object-cover" />
-          <button onClick={() => { setPhoto(null); setPreview(null); }} className="text-base font-medium text-ink-soft underline">
-            Remove photo
-          </button>
-        </div>
-      )}
-      {micError && <p className="mt-2 text-base text-saffron-deep">{micError}</p>}
-      <div className="mt-3 flex gap-2 border-t border-line pt-3">
         {props.allowPhoto && (
           <>
             <input ref={fileRef} type="file" accept="image/*" capture="environment" hidden onChange={(e) => pickPhoto(e.target.files?.[0])} />

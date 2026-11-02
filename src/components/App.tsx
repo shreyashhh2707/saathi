@@ -15,6 +15,21 @@ const SAMPLE_LOGS = [
   "Had chai with 2 biscuits and one ladoo at my neighbour's",
 ];
 
+// Placeholders show real examples in the person's own voice, so it's obvious they can just talk.
+const ONBOARD_PLACEHOLDER = [
+  "Just talk naturally, for example:",
+  "“I'm Suresh, 72 years old, pure veg. My doctor said my BP is high, eat less salt. I want to drink 8 glasses of water and walk 30 minutes a day. I wake up at 6 and sleep by 10. My daughter Priya wants updates.”",
+].join("\n");
+
+const LOG_PLACEHOLDER = [
+  "Say it any way you like —",
+  "“Lunch: rice, dal and fish curry”",
+  "“Aaj 3 glass paani piya”",
+  "“सकाळी अर्धा तास चाललो”",
+  "“Feeling a bit tired today”",
+  "…or tap 📷 for a photo of your plate.",
+].join("\n");
+
 const LANGS = [
   { code: "en-IN", label: "English / Hinglish" },
   { code: "hi-IN", label: "हिन्दी" },
@@ -354,7 +369,8 @@ export default function App() {
               busy={busy}
               allowPhoto
               submitLabel="Tell Saathi"
-              placeholder="What did you eat, drink or do? How are you feeling?"
+              placeholder={LOG_PLACEHOLDER}
+              rows={6}
               onSubmit={(text, photo) => logInput(text, photo)}
             />
             {chat.length === 0 && (
@@ -493,7 +509,7 @@ function Onboarding(props: {
           would like to hear how you are.
         </p>
       </div>
-      <VoiceInput lang={props.lang} busy={props.busy} submitLabel="Continue" placeholder="I'm 68, vegetarian, my doctor said to walk every day…" onSubmit={(t) => props.onSubmit(t)} />
+      <VoiceInput lang={props.lang} busy={props.busy} submitLabel="Continue" placeholder={ONBOARD_PLACEHOLDER} rows={7} onSubmit={(t) => props.onSubmit(t)} />
       <button onClick={props.onSample} disabled={props.busy} className="rounded-2xl bg-white/70 p-4 text-left text-base shadow-soft ring-1 ring-line transition hover:bg-white">
         <span className="font-semibold">Just looking?</span> Try it as a made-up person: Lata, 67, from Margao →
       </button>
